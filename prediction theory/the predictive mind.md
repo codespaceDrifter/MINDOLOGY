@@ -34,3 +34,8 @@ i do not know i am doing this. the process is unconscious and fast, at a neuron 
 there are different levels of regularities. small scale regularities like object persistance have short time scales and lots of detail. large scale regularities like economic patters have long time scales and low detail. the prediction happens via a range of hierachies talking to each other. top down regularities priors predictions guide low level perception and low level perception corrects top down predictions
 
 ### prediction error minimization
+
+true generator function + random noise = actual data  
+
+
+

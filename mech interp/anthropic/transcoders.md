@@ -1,8 +1,8 @@
-notes for transcoder paper research
+# notes for transcoder paper research
 will implement on a small model later in torchrvn repo interpretability folder
 
+## on the biology of llm paper notes
 https://transformer-circuits.pub/2025/attribution-graphs/biology.html
-# on the biology of llm paper notes
 
 ## cross layer transcoder
 a single module that replaces all of the original ffw modules in a transformer. 
