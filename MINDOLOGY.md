@@ -8,7 +8,7 @@ the ultimate end goal of this research for me, besides interest, is to bootstrap
 
 note that i am not interested in blindly doing AI research like adjusting algorithms without theory on why they work or don't work and i am not interested in purely accelerating AI progress with theory because i view timelines as insignificant. i view getting AGI right and aligned to Utopia as the only thing that matters.  
 
-i will write and upload this weekly as i learn and experiment. past progress can be seen in git commits. specific notes on specific books and papers on folders in this repo. algorithm implementations in the svnapse repo, datasets in the dvtasteps repo, attempt at frontier primy algorithms in the primy repo.     
+i will write and upload this weekly as i learn and experiment. past progress can be seen in git commits. specific notes on specific books and papers on folders in this repo. algorithm implementations in the svnapse repo, datasets in the dvtasteps repo, experiments in the expvr repo. attempt at frontier primy model in the primy repo.     
 
 # SECTION ONE: BIOLOGICAL MINDS
 
@@ -24,6 +24,8 @@ to understand the mind we first study biological minds. because although frontie
 
 ## Chapter Four: Matmul and Relu
 
+there are two views of a matmul. one is a series of dot products: finding similarities then forming a new coordinate. another is as a function approximator. 
+
 ## Chapter Five: Attention
 
 ## Chapter Six: Mechanistic Interpretability
@@ -31,5 +33,6 @@ to understand the mind we first study biological minds. because although frontie
 # SECTION THREE: THEORY AND RESEARCH
 
 ## Chapter Seven: Mathmatical Theory
+
 
 

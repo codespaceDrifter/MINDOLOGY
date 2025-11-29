@@ -5,6 +5,9 @@ will implement on a small model later in torchrvn repo interpretability folder
 https://transformer-circuits.pub/2025/attribution-graphs/biology.html
 
 ## cross layer transcoder
+
+(NOTE i think the algo i described is wrong i need to read the circuit tracing paper to figure it out)
+
 a single module that replaces all of the original ffw modules in a transformer. 
 weights: a FFW module of dimension [embed_dim] --(linear)-> [features] (features is much larger than embed_dim) --(relu)-> --(linear) -> [embed_dim]
 training data: the original ffw inputs and outputs across all layers
