@@ -22,11 +22,16 @@ to understand the mind we first study biological minds. because although frontie
 
 # SECTION TWO: ARTIFICIAL INTELLIGENCE
 
+AI is impressive to a point where studying frontier algorithm can provide insights into how the mind works. we will also examine pitfalls of current AI and try to explain them with mindology of which part of a AGI mind their algorithms lack.  
+
 ## Chapter Four: Matmul and Relu
 
 there are two views of a matmul. one is a series of dot products: finding similarities then forming a new coordinate. another is as a function approximator. 
 
-## Chapter Five: Attention
+## Chapter Five: Transformer
+
+
+a feedforward is sort of like a SAE where the highly superpositioned activations get projected with each neurons as a dot product mapping onto a sparse concept basis which then affects a bit of how the result activation looks like. so the input activation is only defined based on the encoder (first matmul tensor) weights. 
 
 ## Chapter Six: Mechanistic Interpretability
 

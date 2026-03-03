@@ -67,3 +67,5 @@ the error is the prediction minus actual activation. when we try to minimize tha
 
 what you actually experience is a combination of the top down constructed prediction and bottom up error signal.  
 
+## Prediction error, context, and precision  
+
