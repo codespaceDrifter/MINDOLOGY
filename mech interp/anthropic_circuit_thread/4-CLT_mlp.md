@@ -6,16 +6,29 @@ https://transformer-circuits.pub/2025/attribution-graphs/biology.html
 
 ## cross layer transcoder
 
-(NOTE i think the algo i described is wrong i need to read the circuit tracing paper to figure it out)
+each CLT reads residue stream before MLP with an encoder and writes to MLP_out of all future MLPs using seperate decoders.  
+all CLTs outputs are added and trained as a unified system.  
+each CLT is supposed to capture what that MLP adds to the residue stream, and since later MLP layers could just amplify the same feature, it should include amplifications. So the same feature is only appear once in the graph.  
 
-a single module that replaces all of the original ffw modules in a transformer. 
-weights: a FFW module of dimension [embed_dim] --(linear)-> [features] (features is much larger than embed_dim) --(relu)-> --(linear) -> [embed_dim]
-training data: the original ffw inputs and outputs across all layers
-training loss: MSE on original ffw data + L1 regularization  
-($\lambda * \sum_i |z_i|$)  
-$z_i$ being the result AFTER RELU. this encourages sparsity. note that it is NOT the final result after the second linear.
-note: the transcoder is a SINGLE set of weights on a SINGLE transcoder module trained on EVERY ffw modules' data rather than having the same number of transcoders as ffws.
-and then features are labelled automatically by seeing which features are most active on which contexts. maybe loop through context, create a feature -> contexts (small context window perhaps not full sentencce) where the feature is activated map. and then auto summarize.
+encoding:  
+
+$$a_ℓ = JumpReLU(W_{enc}^ℓ · h_ℓ)$$  
+
+- $a_ℓ$: feature activations at layer $ℓ$, shape $[n_{features\_per\_layer}]$
+- $W_{enc}^ℓ$: encoder matrix at layer $ℓ$, shape $[n_{features\_per\_layer}, d_{model}]$
+- $h_ℓ$: residual stream post-attention at layer $ℓ$, shape $[d_{model}]$
+
+decoding:  
+$$\hat{y}_ℓ = \sum_{ℓ'=1}^{ℓ} W_{dec}^{ℓ' \to ℓ} \cdot a_{ℓ'}$$
+
+- $\hat{y}_ℓ$: CLT reconstruction of MLP output at layer $ℓ$, shape $[d_{model}]$
+- $W_{dec}^{ℓ' \to ℓ}$: decoder matrix for features at layer $ℓ'$ writing to layer $ℓ$, shape $[d_{model}, n_{features\_per\_layer}]$
+- $a_{ℓ'}$: feature activations from layer $ℓ'$, shape $[n_{features\_per\_layer}]$
+- sum runs over all layers from $1$ to $ℓ$ (all earlier features contribute)
+
+
+
+
 
 ## specific findings
 
