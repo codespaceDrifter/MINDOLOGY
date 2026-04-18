@@ -30,6 +30,11 @@ humans can also parallel apply to some extent. humans read one word at a time, n
 each neuron, biologically and in silicon, are made up of weights and activation. think of activation as memory, or a workspace. perhaps a simple explanation is more complex ideas require more activations. and a human brain with its limited neurons can only have so many activations and so many ideas, thus making reading a paragraph at once impossible, needing constant sequential compression.  
 but a transformer, each neuron can have multiple activations, as many as vram allows in fact. this "one neuron multiple activation" framing is better than "copying its neurons many times"  
 
+# attention neuron interpretation  
+
+Q, K  as feature extractors. the features the extract are supposed qna relationship not same relationship at each coordinate.   
+V as feature extractor O as what it adds to.  
+
 # QK circuit OV circuit  
 
 we can multiply QK and OV together to see what features it wants to attend together and what information those output  

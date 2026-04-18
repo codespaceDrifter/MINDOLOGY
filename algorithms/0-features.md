@@ -6,6 +6,7 @@ we try to break the entire activation into a combination of features. features s
 but why are there features at all? thinking about the mindology theory, one purpose of the mind is efficient world simulation for action sequence planning. and i would argue, different minds, silicon or biological, would converge  to the same set of features when modeling the same reality.   
 not saying that all transformer features will be interpretable. some of it could just be data folding purely geometrical. some of it could be concepts of subject matters i do not understand. but for understanding mech interp i think the features that both me and the model understands are enough to build theory.  
 
+representations can be of anything (not just static concepts like kittens but also motions like running or adjectives like cute or just any concept at all), and transformations are just the relationship mapping between them.  
 
 # superposition
 
@@ -22,7 +23,7 @@ we hypothesize that adding together scaled features represent a concept that is 
 
 # SAE
 
-we try to decompose features with sparse autoencoders. training a (embed_dim, expansion * embed_dim) encoder, relu, weight tied transposed decoder, with sparsity loss, to break down the activation collected over some dataset into sparse features.  
+we try to decompose features with sparse autoencoders. training a (embed_dim, expansion * embed_dim) encoder, jumpRelu, decoder (we don't use tied weights), with sparsity loss, to break down the activation collected over some dataset into sparse features.  
 
 we can interpret those features with the context that caused  them to  fire, their direct decoding in word embedding space, and pertubation experiments. note that feature decodings should also form a sort of coherent linear representation relationship like word embeddings.  
 
@@ -33,7 +34,8 @@ we choose to train on pre-norm residue stream at each layer. beacuse that is the
 
 one problem with SAEs is residue stream's skip connections mean that the same features is repeated a lot of times in subsequent layers. therefore it would both make later generating refined graphs very difficult and make each activation composed of many features that might be harder for later layers to sparsely decompose. so we use WCCs (weakly causal crosscoders) instead.  
 WCCs at each layer encoders that residue stream, then has seperate decoders for that and all subsequent residue stream activations. we train all WCCs jointly, adding all their decodings together to predict a layer's activation.  
-the idea for using individual decoders is that the encoder will capture a feature, but that feature's representation would change as the layer's progresses (since each matmul through a weight essentially completely changes the basis), so each decoding should learn the feature the encoder encoded's representation in their respective layers. however this could pose a problem where it drifts into related ideas instead rather than the same idea, say WCC at layer 3 encoded feature "apple" and it turns out "apple" in the training data happens a lot with "red" so some later layer decoding decodes into "red" instead. we would hope this unintended consequence does not happen because hopefully training leads some later WCC to encode "red" and decode "red" to it instead.  
+
+the idea for using individual decoders is that the encoder will capture a feature, but that feature's representation would change as the layer's progresses (since each matmul through a weight essentially completely changes the basis in it's outputs it adds to the residue), so each decoding should learn the feature the encoder encoded's representation in their respective layers. however this could pose a problem where it drifts into related ideas instead rather than the same idea, say WCC at layer 3 encoded feature "apple" and it turns out "apple" in the training data happens a lot with "red" so some later layer decoding decodes into "red" instead. we would hope this unintended consequence does not happen because hopefully training leads some later WCC to encode "red" and decode "red" to it instead.  
 
 # clustering features  
 
