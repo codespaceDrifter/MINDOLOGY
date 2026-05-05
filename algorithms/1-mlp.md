@@ -1,111 +1,123 @@
-# mlp  
+# mlp
 
-as said before in features.md, representations can be any concepts and transformations is the mapping between them.  
-activations form representations, and weights are the learnt transformations. they co-define each other numerically (an activation is only defined on the later encoder layer and a weight is only defined on what it's output means. hence we need something external such as inputs and outputs to ground the interpretation). in this article we try to think about how to interpret weights generally and then for the MLP layer specifically  
-neurons, both biological and silicon, uses two fundemental operations: matmuls and relus. (note that biological neurons have binary firing with a temporal rate while silicon neurons use an activation value to approximate rates). i will try to explain why these two operations are so fundemental, at a both numerical and conceptual level.  
+as said before in features.md, representations can be any concepts and transformations is the mapping between them.
+activations form representations, and weights are the learnt transformations. they co-define each other numerically (an activation is only defined on the later encoder layer and a weight is only defined on what its output means. hence we need something external such as inputs and outputs to ground the interpretation). in this article we try to think about how to interpret weights generally and then for the MLP layer specifically.
+neurons, both biological and silicon, use two fundamental operations: matmuls and relus. (biological neurons have binary firing with a temporal rate; silicon neurons use an activation value to approximate rates).
 
-# matmuls  
+# matmul
 
-each individual neuron with n weights and 1 bias is essentially a nd -> 1d mapping. and a layer of neurons with m neurons  would be a nd -> md linear mapping.  
-for a single neuron it is a nd hyperplane with some bias shift. (nd hyperplane through n+1d space because we include output as a dimension)  
-for visual intution picture the 1d->1d mapping. a neuron say x is its input y is ts output, would be a straight line. for 2d->1d mapping, where a neuron's input is xy and output is z, it would look like a plane.  
+each individual neuron with n weights and 1 bias is essentially a nd → 1d mapping. a layer of m neurons is a nd → md linear mapping.
 
-the conceptual understanding is through features. we always think of features as starting from the origin. the hyperplane is essentially a feature detector where the feature is the neuron's weights. (say a neuron's weights is 2x + 3y it's feature would be [2,3]) and the activation would be how much the input went along the feature direction plus the bias (high bias shifts plane upwards causing inherently more activation, negative bias vice versa)  
+## row neuron view
 
-## TO WRITE! IMPORTANT!
+each row of W is a direction in input space with a magnitude. that is the "default" input-independent scaling of that output feature. break each weight vector into a unit vector in that direction times its magnitude. then each output coordinate equals the input projected onto the unit vector's length, times the weight vector magnitude, plus bias.
 
-matrix level intuition. rank. rotate, streth, shear. neurons as basis. why 2d->3d projection must live in a 2d hyperplane. what's the point of sclaing up and down dimensions.  
- but this is a different view  tho you arent viewing EACH NEURON as a feature anymore you are viewing the nth coordinate of each neuron as a feature
+## column basis view
 
-some theories:  
-low ->  high projection: neuron view.  
-high -> low projection: column view.  
-activation with relus after: neuron view.   
-works for both superposition compression, and mlps, and saes.  
-reasons:  
-low -> high means there's more neurons than input_dim of activations, so each neuron should detect features in embedding.  
-high -> low means there's less neurons than input_dim of features, so each feature should scale  a column
-relus means nonlinearity happens at the neuron level which forces a neuron level information encoding
+each column of W is a direction in output space with a magnitude. that is the "default" input-independent scaling of what a feature adds to the output space. in the column decoder view it's a 1d → nd line, not a plane.
 
-actually i now renounce this view. it can be a high -> low feature detection for example maybe attention QK.  
+## hyperplane view
 
-honestlyt the distinction is not dimensionality i  was wrong the distinction is what  we interpret them as wanting to accomplish whether they  want to accomplish extracting features or using features
+for a single neuron it is a nd hyperplane through n+1d space (we include the output as a dimension) with some bias shift. for visual intuition: the 1d → 1d mapping is a straight line; the 2d → 1d mapping (input xy, output z) is a plane. each feature unit vector is the direction of the hyperplane, the neuron magnitude is the scale, and the bias is the shift.
 
-you want to relu post feature output, because that prevents features in opposite  directions from outputing something negative. and you do not want to relu post activation output because that kills the superposition.  
+## space shift view
 
-matmuls as scaling a space. (dragging an axis one point fixed at origin other point wherever whole space follows). down projection as squashing up projection as lifting. whatever svd is)  
+matmul as scaling a space — dragging an axis with one point fixed at origin and the other point wherever, and the whole space follows. down projection as squashing, up projection as lifting. a good visual: a unit circle of directions at the input becomes an oval at the output. up projection is left-invertible: x = (W^T W)^-1 y for y = Wx.
 
-i feel like im actually pretty fucking close to uniting the two views ngl. the neuron feature view. is low to high projection. you are. lets justpicture 2d->3d ok. you are putting some low dimension activation onto 3d space. that activation is a single number but you decompose it say into here 3 features. then using the drag view you drag each of those three to align to some axis. thats the fucking matmul. and you get from activations to features. reverse view. features to activations. you start with the three axis aligned basis. you squash at some angle. then drag them to superposition.
+## dimensionality and rank
 
-even if the neuron level view doesn't work it is still natural to try it before doing SAEs.  
+a composite is constrained by its rank (the effective output dimension), bounded by the hidden dim. e.g. an (n,1)(1,n) composite is a rank-1 (n,n) matrix.
 
-(maybe break this into two section one after relu)
+## any decomposition is valid (gauge)
 
-# relus  
+it isn't just "not unique" — it is gauge. without relu between encoder and decoder, you can rotate them freely and the composite is the same. matmul is the collection of all row-column decompositions.
 
-without relus, any layers of neurons could just have their weights be multipled together into one layer, making depth meaningless.  
-for visual intution picture the 1d->1d mapping. without relus, all neurons in layer 1, would be a straight line. and layer 2 would have ways to scale and shift these straight lines. but no matter how it scales and shifts, when added together it's still a straight line. not matter how many layers it would always just be a straight line. but say there is a relu after each layer. after first layer and relu, each neuron's effective output would be a line with a inflection point. and at layer 2 you can combine these differently  shaped lines together into more jagged line. and at layer  3, you have layer 2's jagged lines as input to scale and shift, creating even more jagged lines. until eventually you can approximate any function.  
-this is why only matmul and relus are needed, they can approximate any functions wihout needing inputs to multiply each other or have a non one power.  
-for more visual intuition picture a 2d->1d mapping, each neuron without relu would be a plane. and at layer 2 no matter how much you scale and shift the planes and add them together it would still be a single plane. but with relu you can create a jagged mountain like shape. and at future layer even more jagged and descriptive shapes.  
+if we pick either an encoder or a decoder, we can always solve for a valid other (via pseudoinverse) such that the composite returns the same result. neuron row view: each coord (x,y) of the composite is all the input features dot all the output features at the x encoder coord of input and y decoder coord of output. it is scaled from the x coordinate of the input written to y coordinate of the output.
 
-during training, the model have the inputs and outputs, and it tries to form the shapes it can to reconstruct the output from the input. 
+dragging an encoder row around with the composite frozen makes decoder columns NOT related to that row change to a large extent — even reversing signs. so a specific feature-encode → feature-decode mapping in a linear space is meaningless.
 
-## TO WRITE!  
-clean this up
-
-oh fuck it RUINS THE ENTIRE FUCKING SUM i forgot EACH NEURON IS A SUM like say the next  is a square detector that has like 4 angles   it should  be a square but the fucking  wait no it literally doesnt because then why not just have a negative value  for curves . but i guess even like maybe there is like OH FUCK THEN if there is NO ANGLES JUST CURVES then like then IT  WOULD SAY A CIRCLE IS A SQUARE CLAUDY IT WOULD SAY A CIRCLE IS A SQUARE.
-But wait why not just set the curve weights to 0. 
-Ask Claude.
-Oh it’s because say it’s a square with rounded corners you want square to fire less strongly you WANT NEGATIVE WEIGHTS FOR CURVES. But you DON’T WANT negative curves coming in  to be positive. 
-Wait but what’s wrong with negative weights. They won’t cause circle fire square. positive  weight  would make circle fire square. a negative weight wouldnt.  so what is the problem with negative weight on curves why does it still need relus?  
-is it cause maybe we  need a third class right say triangle slangted angels then its still not circle but then we would predict square because curves fire negatively with negative weights but its literally not a square dykwim. i wrote this many weeks before does this have any point to you at all
-note that not all mlp layers decoder ALL features. just SOME. that it will use to add information. the rest get preserved in the skip connection. 
- Each row of M is a direction in input space with a magnitude. that is the "default" input-independent scaling of that output feature.  
-each column of M is a direction in output space with a magnitude. that is the "default" input-independent sclaing of what a feature adds to the output space  
+composite matrix: constrained by rank (effective output dimension) by their hidden dim. e.g. an (n,1)(1,n) composite is a rank-1 (n,n) matrix.
 
 
+# polyneuron and polysemanticity
+
+from the neuron view each neuron is polysemantic. from the feature view each feature is polyneuron. the naive "row's feature → column's feature" mapping is wrong: freeze and drag breaks it completely. different encoders in opposite or similar directions can mess up a feature-row → feature-column mapping. each neuron row/column basis feature pairing is ONE real impact among THOUSANDS of neurons. it has to be considered as a whole.
+
+even with relu: relu eliminates the impact of encoders pointing the opposite direction, but it does not eliminate encoders in similar or roughly cross-influential directions with completely different decodings. so MLPs are still polysemantic.
+
+orthogonal = monosemantic = decomposition. overcomplete = polysemantic = projection. (to an extent — not strictly equal.) both relu and sparsity push toward monosemantic.
 
 
+# relu (and other nonlinearities)
+
+without relus, layers of neurons could just have their weights multiplied together into one layer, making depth meaningless. visualize the 1d → 1d mapping: without relus, every neuron in layer 1 is a straight line; layer 2 scales and shifts these and adds them, but the result is still a straight line, no matter the depth. with a relu after each layer, each neuron's effective output gets an inflection point. layer 2 combines hinged lines into a more jagged line; later layers chain this into arbitrarily complex piecewise-linear functions. for 2d → 1d: each neuron without relu is a plane; with relu you get a mountain shape; later layers bend these into more descriptive shapes.
+
+this is why only matmul + relu is needed — they can approximate any function without inputs multiplying each other or non-1 powers. "locally linear" is a good term — it applies to silu, gelu, etc.
+
+relu is a "voting gate" at each neuron row: other features can turn things on or off for this feature differently than if this feature were passed through alone. if we assume relu is frozen (active set held constant), the feature is still linear, even with negative values going through "on" gates.
+
+note that not all MLP layers decode ALL features — they only decode SOME that the layer uses to add information. the rest get preserved in the skip connection.
+
+layernorm scales each component the same way, so it's still linear.
+
+SwiGLU: 1.5x the MLP size by using an encoder double the size — one half for gating, one half for information. different coordinates are used for gating than for information.
+
+# space carving
+
+different neurons with relus have different decision boundaries, and these boundaries carve the activation space into regions, where within those regions, scaling of a single feature result in a linear scaling of it's output. however past a region, different neurons activate or deactivate, cause a different line upon which the output scales with the input  
+this means we shouldn't treat directions as the lowest level of analysis but a direction and magnitude range as the lowest level of analysis.  
+
+# layer is the atomic unit of interpretation
+
+all meaning lives in representations (activations). weights are just polysemantic space shifting — transformations between representations. neuron view doesn't matter, column view doesn't matter; due to polysemanticity they are merely one suggestion in a huge layer. you can only consider the layer as a whole. the layer IS the lowest level of interpretation, and what it does, at that level, is just space shifting.
+
+# linear representation hypothesis
+
+matmuls are linear at the direction level. since scaling input in the same direction only scales output in the same direction (with linear, or locally within regions of non linearity explained later).  
+
+each transformation can be viewed as a sum of: individual encoder alignment × that neuron's weight scale × that neuron's decoder column scaling. matmul doesn't force features to interact — only relu does. you can view the composite vector as a parallel stream of information that only gets combined at relu boundaries.  
+
+this means rather than viewing an activation as one combined feature, we can view it as parrallel features that coexist, interacting only at nonlinearity where they vote on neuron gates.  
+
+this is also supported by the residue stream, where each layer adds something to the original stream.  
 
 
-note that i titled this relu but it applies to other similar activation functions like gelus.  
-one particular case is the SwigLU. which 1.5x the MLP size by using a encoder double the size, one for gating one for information. this is because different coordinates can be used for gating than information.  
+# mlp neuron level
+
+an MLP is structurally similar to an SAE: expanding embed_dim by some factor (e.g. 4x), relu, then projecting back down. combined with the fact that relus cause a privileged basis that makes superposition less likely, it is worthwhile to interpret the MLP hidden layer at the neuron level, in addition to SAE and WCC interpretations.
+
+this is a good place to actually test the theory of neurons as individual feature detectors. not just with interpretation and perturbation — also by measuring how orthogonal the encoding rows are and whether they follow a roughly superposition structure (not necessarily a complete one, since not all features are detected in a single MLP), and how superposition-like the outputs are. there could be repeating features or just generally close ones making this harder to determine, but overall there should be some "superposition score" to evaluate the superposition hypothesis.
+
+interpretation-wise, check activation monosemanticity based on context. auto-categorize and auto-determine through LLM api calls.
+
+we can also use SAE or WCC features and try to see if any MLP encoding neurons match them.
+
+# sparse decomposition  
+
+the total thread here is. we want to interpret neural computation into interpretable features. the per neuron view is false due to polysemanticity. so we look to activations. activations as a whole is false because local linearity. so we want to find decompositions of activations that are interpretable. 
+
+to enumerate directions and magnitude bands would be astronomically undoable so we will have to learn it somehow. we have to learn ideally, what the layer actually uses. just assuming we choose a encoder decoder with relu in between. we wnt decoders to be the correct features, and encoders to detect their correct scaling. in a overcomplete decoder basis, any embed_dim number of decoders will perfectly reconstruct the activation. to force SAE to learn the actual features used, we train with a heavy sparsity loss. say it can only activate 10 features for an activation. now on an individual activation  level it is forced to find patterns that actually when added together reconstructs better and on a total data level it would need to learn features that actually get used by the model.  
+note that there is an assumption that activations are actually composed of sparse feature combinations we are trying to recover
+we can think of decoders as the basis feature and encoder as the "solver for whats the correct activation due to it being an overcomplete basis and wanting sparse activations" i guess  
+
+one problem is bands are still in the view of the composite activation. if we consider within a band, each "true feature" resides within their own seperate band which then they get added together. wait is that even true i guess not. band is actually the actual band that features will get added to the actual region in the hyperplane before they breach local non linearity.  
+
+with sparse autoencoders. SAEs forces a relu, which allows less room (only one quadrant) to pack orthogonal features, makign them more basis aligned.  
+
+there is a purely compression information theory point of view on SAEs. we don't care about the fact that SAE matches linear representation hypothesis (trying to decompose some true features the model actually uses) nor do we care it ignores non linearity bands. we just want some sparse code for activations that reconstruct it and we interpret those codes, because enumerating all direction magnitude pairing is impossible. trying to minimize codelength (the sparse feature activations) and codebook (the sae weights)  
+
+# interpratability  
+
+we need to ground interpretability to output eventually. changing it should change outputs. one possible approach could be: we find features near the end of the layer. and then we can go earlier where we don't have to directly predict outputs but can just predict the next layer of feautres. this mirrors the hierachical parallel check hypothesis in mindology. but currently we interpret everything in parallel directly according to outputs.  
+
+# biological view
+
+each activation is the rate of firing (each coordinate of the activation comes from one previous neuron) and each weight of an encoder neuron is the receiving synapse (number of neurotransmitters). in a 2d → 3d matmul, there are 2 previous neurons and 3 encoder neurons each with 2 weights. the 1st previous neuron fires to the 1st weight of each of the 3, the 2nd previous neuron to the 2nd weight of each.
 
 
+# open questions
 
-# mlp neuron level  
-
-
-MLP is kind of structurally similar to a SAE: expanding the embed_dim to a expansion for 4x, relu, then projecting it back done. combined with the fact that relus cause a priviledged basis that makes superposition less likely, it is worthwhile to interpret the MLP hidden layer neuron level, in addition to SAE and WCCs.  
-
-this is a good place to actually test the theory of neurons as individual feature detectors. not just with interpretation  and pertubation. but also just by seeing how orthogonal the encoding rows are and whether they follow a roughly superposition structure (not a complete structure cause not all features is detected in a mlp) and also how superposition structure the outputs are. note that there could be repeating features or just general close ones making this harder to determine. but overall there should be some "superposition score" to evaluate  the superposition hypothesis.     
-
-interpretation wise check activation monosemanticity based on context. auto categorize auto determine throguh llm api calls.  
-
-we could also use SAE or WCC features and try to see if any MLP encoding neurons match them. 
-
-# feature tables  
-note this is an original idea in developement not anthropic's and not yet tested  
-
-interpret what MLP does by passing input activation feature combinations through and seeing output feature combinations   
-
-assuming activation interpretability is somewhat solved with WCC   
-we simply pass the decoded input features in to the original MLP (do not change it in anyway, keep the nonlinearity) and get the output, decompose the output into features what the output layer's WCC, and see the top k activation values of output features  
-we can then try different combinations of input features, like activating 2 or 3 input features and add their decoded activation and see the output  
-we can also see if different ratios, like activation value 2 for feature A and 1 for feature B, and how that changes the output feature activations  
-note that here we count on WCC to remove any repeated features in the residue stream to their respective original previous layers, otherwise most mappings would just be amplification of the same idea.  
-
-bias pertubation experiment:  
-to add some idea into the MLP model, traditionally researchers would add an external SAE decoding into the residue stream. we can do that, but we can also make it permanently part of the model by just adding the combination we want to the bias term of the MLP decoding.  
-
-weight pertubation experiment:  
-viewing MLP as a feature mapping table, we will modify the weights to change one specific input feature output feature relationship, say from Apple -> red to Apple -> blue, and see if that changes what the model outputs.  
-this is very cool because it should work across prompts. and it actually changes the model rather than for example an external SAE attached to the model  
-
-we might have to change multiple relationships to get an effect. for example first zero out all the apple -> red related features then turn up all the apple -> blue  related features. or maybe it goes (apple -> color) in one layer then (color ->red in a later layer) 
-we would also have to target all mlp across layers that stores this relationship not just a single MLP. this is a wrong assumption attention V or O doesn't store information. but hopefully MLP effects can dominate enough to change outputs.  
-
-to actually change the weights, we have to retrain that specific MLP layer. we need to preserve as much as possible of all other relationships and try to specifically target the relationships we want to change. note that the data would be float activation values (i.e. 1.1,1.2,1.3 ... not uniform i.e. 0,1,2 ...)  
-
-here we keep the bias unchanged to avoid intefering with the original feature mappings too much and in case we want to run both weight and bias changes together.  
-
+- why exactly can we rotate encoder and decoder freely if there's no relu between them? (in the superposition example this rotation is fine — in fact the only algorithm that worked. and in attention there's no relu either.)
+- how would a row neuron view theoretically encode a polysemantic basis? the column basis view also wouldn't work cleanly with polysemanticity.
+- maybe features don't exist — only "directionally coded meaning" exists. that might actually be the correct view, since it would be how things are decoded too.
+- maybe there's some "co-definition" between encoder and decoder, and it's all just space scale.

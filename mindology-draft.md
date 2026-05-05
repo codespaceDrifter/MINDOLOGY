@@ -78,6 +78,7 @@ opmital action sequence: what the model generates as the best action given limit
 actual action sequence: the sequence that is really done by the mind. note that the optimal action sequence and actual action sequence are different. the mind has many problems, laziness, depression, various motivations competing, learnt harmful tendencies, etc. note that also most actions have short timelines. and they are just based on quick past pattern matching stored in weightsrather than a complete intentional tree search of action sequences.   
 
 optimality: how similar is the actual action sequence and the optimal action sequence. the mind has multiple aesthetics that are competing for the actually chosen action sequence. this could be problematic for the mind, like when it's trying to work it gets reward hacked by youtube instead. the optimality of the model determines it's ability to actually execute the optimal action sequence it thought of.  
+maybe there's a term  of this like some  sort of heuristics for actions. "habit" maybe. maybe the brain has parts that generate actions and  the world modeling part is just one thing that feeds activations into that.  
 
 evolution and learning: evolution determines the hardware of what speed and capcaity cap a model could have for thinking and learning. as well as some hardwired aesthetics. more specifically, how neural computation is mapped, i will discuss in the next section. in ANN this is algorithm design. learning is constructing the actual representations from the world. note that learning can also shape aesthetics and in some sense increase speed and capcaity maybe a little bit. in a ANN loss landscape sense, the algorithm (evolution / design) determines the shape of the loss landscape and the learning (training) determines at what point of the loss landscape does the weights of the model lie. a model that is too small or poorly designed won't converge to a low loss no matter how much learning done.  
 
@@ -100,6 +101,25 @@ the optimal action sequence needs to be mappable to the actuator and the optimal
 representations and transformations co define each other. they must exist in pair or groups. because an activation is entirely defined by the weights of neurons receiving it.
 
 optimal thought sequence: abstract and accurate modeling of the real world that takes as few representation and transformations as possible. correct purging of bad action sequences with a good representation that can sort of encode future aesthetics scores?
+
+# understanding the mind    
+
+in mindology we want to "understand the mind". in mech interp specifically we want to understand the mind of silicon llms.  
+we defined roughly what the "mind" is. but what is "understand"? it's kind of meta. because the "mind" IS the thing that "understands".  
+we are trying to understand the understander.  
+to "understand" as theorized previously before, is for a mind to form representations and transformations that can do abstracted simulation of how action sequences affect the world state.  
+the efficient mind convergence hypothesis: i would argue, when different minds whether silicon or biological, tries to model the same world state, assuming they are both capable and  efficient, would converge onto similar set of representations and transformations.  
+let's just think specifically about mech interp for now. what does it mean to have interpreted a model?  
+it means that, we, as minds, can find the same representations and transformations in ourselves and identify them within the model.  
+of course regarding an llm a lot of the features between for example me and  gemma4-e4b won't converge. gemma4-e4b can  know some things i  don't about particle physics, i  can know somethings he don't about mindology or my own personal history, gemma4-e4b could have just numerical messiness formed by fitting data, i have emotional states, motivations, consciousness related things that  it won't have.   
+but there is still significant overlap, we both know the sky is blue, kittens are cute, basic maths, etc. and this siginficant overlap is enough to both to  a large part break  down a model's mind and to discover circuits that is applicable to features gemma4 has that i do not.  
+so to "understand" the mind, particularly mech interp, is somewhat different than say "to understand physics". in understanding physics you are trying to build representations and transformations that model  the phsycial phenomena, in understanding the mind you are trying to MATCH YOUR representations and transformations ONTO the model's representations (activations) and transformations (weights). you are NOT JUST looking for some numerical pattern in it's activations and weights or obnoxiously say "it's just doing data folding in high dimensional space" and pretend you have understood it. because to understand better means your  model is more accurate, and to understand allows you to have better actions  fundementally.  for example after mech interping a model i can change what it thinks about by changing activations, i can change it's personality by changing weights, and who knows what else in the future. and you can not do that by just saying "it's all high dimensional data folding", tho of course the numerical view is fundemental and helpful as we will see in later sections.     
+so what is the distinction.  
+in physics. we are trying to go from physical phenomena -> theory  (equations, terms, etc.) -> physical phenomena so we can predict and control it  
+in mech interp. we are  trying to  go from activations and weights -> our own mind's representations and transformations -> activations and weights so we can predict and control it  
+basically in physics we don't  know what the "middle level theory" is that's what we are trying to find. and in mech interp, we to some extent DO know what they are it's more of the process of GETTING to that, whether SAE or WCC or whatever, we are trying to  find. that claim that we know what that middle section is already is the core claim  for the efficient mind convergence hypothesis.  
+in one sentence, in mech interp,  we are modeling the llm's activations and weights onto OUR representations and transformations.  
+
 
 # high level thinking  
 what about long horizon high level thinking that isn't just a forward to back? maybe they are mostly upper level concepts. what causes this in the brain. i think there are two causes (kind of a murky divide)  
@@ -151,3 +171,5 @@ also all of this is population coded rather than single neurons. each feauture i
 composition. different coordinates can encode different parts of meaning. for example if small, furry, and fast means mouse, maybe it is 3 parts of an activations that occupy different coordinates, and if i switch the small part for big it would be detected later as cougar instead. if each of the 3 parts is the full activation added together, it would be harder to detect.
 
 what about algorithms or rather circuits what are they like ICL and maybe mesa optimization
+
+
