@@ -114,8 +114,47 @@ we need to ground interpretability to output eventually. changing it should chan
 
 each activation is the rate of firing (each coordinate of the activation comes from one previous neuron) and each weight of an encoder neuron is the receiving synapse (number of neurotransmitters). in a 2d → 3d matmul, there are 2 previous neurons and 3 encoder neurons each with 2 weights. the 1st previous neuron fires to the 1st weight of each of the 3, the 2nd previous neuron to the 2nd weight of each.
 
+# features and matmuls:  
+
+a matmul, whether up or down projection, can always be pictured as dragging the basis. up projection drags each basis to a high dimension and down drags them to a lower dimension.  
+how does matmul map features to the desired outputs? what are the limitations since matmul -> relu -> matmul can't be infinitely free?  
+a feature, decompose it to a combination of coordinates. each coordinate has a set output? wait no im confused  
+
+what if i think of a space not as a whole space but as individual directions and magnitudes and what they eventually become? local linearity is the bound?  
+within locally linear regions we can decompose inputs into their coordinates, pass coordinates through the two transformations including relu, and get the direct out.  in fact. in some sense we can ALWAYS do this. relu only defines WHEN A NEURON GETS APPLIED. but wait neuron row view is not the coordinate view. also neuron row view is projection not decomposition!  
+
+this introduces a split view i guess the neuron projection view and the space decomposition view. or rather the space decomposition view is basically the column basis view.  
+
+well  
+
+each encoder row neuron can be visualized as a hyperplane with a hinge. with say 2d x y input z output. then everything negative gets cut by relu causing the hinge which is also the decision boundary. and then decoder we can think of each output coordinate as a linear combination of that decoder row of the various hyperplanes. or we can think of all the hyperplanes z as coords and use each to scale a decoder basis. none of these give an intuitive space shift tho. maybe it's impossible? if it's "intuitive" maybe it can't be powerful?  
+
+several views present here: space shift, hyperplane, encoder decoder, decision boundaries distances. fuck need to think through these  
+
+PIECE WISE SPACE SHIFT! within a decision boundary carved polytope it IS a spae shift. we an pass x and y in and get a new x and y it is a drag. then we drag the boundary of the polytope to get where it's shifted to.  
+
+side note. it is worthwhile to see what "intuition" even means. it means a correct and compressive understanding i guess that will later help with mech interp? you can get wide rules of what's possible what's not, like the geometric intuition of how without relu it's a linear line no matter what in the 1d to 1d case. want more intuitions like this. i want ALL possible intuitions like this regarding deep learning to be learnt by me. maybe there aren't even that many possible.   
+
+a simple intuition check is: what is possible with this neural network and what isn't!
+
+and some like 3 training data mlp 2d 3d relu 2d is possible to predict and some isnt WHY. 
+
+btw we can normalize encoder weight and bias and times that number into the decoder and decision boundaries won't change. 
+
+however piecewise linear space shift. doesn't capture the fact that nearby polytopes like tend to be alike in terms of shifting cause they're only one neuron's few influence apart. wait i guess they ARE always going to border each other still.  
+
+without relu (2,n) encoder (n,2) decode is always jsut a (2,2) space shift. no matter how big n is. (btw what constraints does small n have?)  
+
+
+
+
+
+
+
 
 # open questions
+
+- what folds are possible in a mlp nd->md->nd if m > nd?. like i know how to conceuptulize a no relu spaceshift (dragging coords) but how do i conceptualize a thing with relu in between because it's not infinitely free.  
 
 - why exactly can we rotate encoder and decoder freely if there's no relu between them? (in the superposition example this rotation is fine — in fact the only algorithm that worked. and in attention there's no relu either.)
 - how would a row neuron view theoretically encode a polysemantic basis? the column basis view also wouldn't work cleanly with polysemanticity.

@@ -42,3 +42,10 @@ the idea for using individual decoders is that the encoder will capture a featur
 we should run hyperparameter search on expansion factor and sparsity loss, aiming for about an average of 50 of features firing above a certain threshhold like 0.1 per activation while having less than say 25% dead features what fire say less than 5% of inputs above 0.  
 but even after this, a lot of features could have very similar meanings. we want to cluster them together. there's two ways to determine clusters: either semantically by their interpretation, or numerically by their encoding cosine similarity. and after deciding we have another choice: either to just merge them together in the frontend generated visualization tool, or to literally merge their weights somehow (only works for numerical similarity). i think for now i will choose to cluster based on interpreted meaning and only merge them in the frontend.  
 
+
+# the direct in direct out view:  
+
+a method to graphing and analyzing a neuron/feature.   
+
+the input should be the entire input dimension sweep. if studying a intermediate layer, sweep the input dimension and pass them through all previous layers and then pass that into the studied layer. but still graph the actual input as the input.  
+the output should be the final output. when studying intermediary neurons, pass that output across all following layers to get the final output. since we need nonlinearity, first do a pass with all the other neurons in that same layer and record and freeze the nonlinearity (and also attention patterns if applicable) and then just with the frozen stuff pass the neuron/feature stuff in to see the outputs.   
